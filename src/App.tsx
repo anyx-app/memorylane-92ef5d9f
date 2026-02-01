@@ -1,32 +1,20 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ThemeProvider } from "@/theme/ThemeProvider";
-import Index from "./pages/Index";
+import { Routes, Route } from 'react-router-dom';
+import AppShell from './components/layout/AppShell';
+import Dashboard from './pages/Dashboard';
 
-const queryClient = new QueryClient();
-
-/**
- * Default App structure for single-page applications.
- * 
- * For multi-page apps with routing:
- * 1. Import BrowserRouter, Routes, Route from 'react-router-dom'
- * 2. Wrap content in <BrowserRouter><Routes>...</Routes></BrowserRouter>
- * 3. Add routes: <Route path="/about" element={<About />} />
- * 
- * See docs/ROUTING.md for detailed instructions.
- */
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <ThemeProvider>
-        <Index />
-      </ThemeProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+function App() {
+  return (
+    <Routes>
+      <Route element={<AppShell />}>
+        <Route path="/" element={<Dashboard />} />
+        {/* Placeholder routes for navigation items to prevent 404s on demo clicks */}
+        <Route path="/albums" element={<div className="p-10 text-center text-slate-400">Albums View Coming Soon</div>} />
+        <Route path="/favorites" element={<div className="p-10 text-center text-slate-400">Favorites View Coming Soon</div>} />
+        <Route path="/settings" element={<div className="p-10 text-center text-slate-400">Settings View Coming Soon</div>} />
+        <Route path="*" element={<div className="p-10 text-center text-slate-400">Page not found</div>} />
+      </Route>
+    </Routes>
+  );
+}
 
 export default App;

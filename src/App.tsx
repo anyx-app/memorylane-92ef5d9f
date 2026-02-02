@@ -3,6 +3,7 @@ import AppShell from './components/layout/AppShell';
 import Dashboard from './pages/Dashboard';
 import Albums from './pages/Albums';
 import Favorites from './pages/Favorites';
+import Settings from './pages/Settings';
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
         {/* Placeholder routes for navigation items to prevent 404s on demo clicks */}
         <Route path="/albums" element={<Albums />} />
         <Route path="/favorites" element={<Favorites />} />
-        <Route path="/settings" element={<div className="p-10 text-center text-slate-400">Settings View Coming Soon</div>} />
+        <Route path="/settings" element={<Settings />} />
         <Route path="*" element={<div className="p-10 text-center text-slate-400">Page not found</div>} />
       </Route>
     </Routes>

@@ -60,3 +60,13 @@ Implemented Favorites feature:
 
 ---
 
+
+## {anyx ed78985c-940b-4e23-8d32-6d450c2abffa} - 2026-02-02 17:57:35
+
+Commit: `d88882315dfb8147a7e3d3b74e399d05972dfeb2`
+Branch: `feature/ed78985c-940b-4e23-8d32-6d450c2abffa`
+
+Implemented Settings page with Account, Preferences, and Notifications sections. Updated App.tsx to include /settings route. Used DashboardLayout and Shadcn UI components.
+
+---
+

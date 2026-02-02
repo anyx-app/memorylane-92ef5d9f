@@ -46,12 +46,18 @@ feat: add Albums page with grid layout
 ---
 
 
-## {anyx 799f008f-2ecd-48b1-8ce3-5177d7aec6c7} - 2026-02-02 14:01:08
+## {anyx 799f008f-2ecd-48b1-8ce3-5177d7aec6c7} - 2026-02-02 17:05:04
 
 Commit: `pending`
 Branch: `feature/799f008f-2ecd-48b1-8ce3-5177d7aec6c7`
 
-Implemented Favorites feature: database schema, Favorites page, and toggle functionality.
+feat: add Favorites page and functionality
+
+- Database: Added `favorites` table with foreign keys to `profiles` and `photos`.
+- Frontend: Created `src/pages/Favorites.tsx` to display user's favorite photos.
+- UI: Added interactive heart icon toggle to `Dashboard` and `Favorites` cards.
+- Routing: Added `/favorites` route and updated navigation.
+- Logic: Implemented `toggleFavorite` function with optimistic UI updates.
 
 ---
 

@@ -4,7 +4,7 @@ SET search_path TO proj_5a69f37d;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- 1. profiles
-CREATE TABLE profiles (
+CREATE TABLE IF NOT EXISTS profiles (
     id UUID PRIMARY KEY, 
     email text,
     full_name text,
@@ -14,16 +14,18 @@ CREATE TABLE profiles (
 
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Public profiles are viewable by everyone" ON profiles;
 CREATE POLICY "Public profiles are viewable by everyone" 
 ON profiles FOR SELECT 
 USING (true);
 
+DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
 CREATE POLICY "Users can update own profile" 
 ON profiles FOR UPDATE 
 USING (id::text = current_setting('request.jwt.claims', true)::json->>'sub');
 
 -- 2. families
-CREATE TABLE families (
+CREATE TABLE IF NOT EXISTS families (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name text NOT NULL,
     description text,
@@ -34,7 +36,7 @@ CREATE TABLE families (
 ALTER TABLE families ENABLE ROW LEVEL SECURITY;
 
 -- 3. family_members
-CREATE TABLE family_members (
+CREATE TABLE IF NOT EXISTS family_members (
     family_id UUID REFERENCES families(id) ON DELETE CASCADE,
     profile_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
     role text CHECK (role IN ('owner', 'admin', 'member')),
@@ -45,7 +47,7 @@ CREATE TABLE family_members (
 ALTER TABLE family_members ENABLE ROW LEVEL SECURITY;
 
 -- 4. albums
-CREATE TABLE albums (
+CREATE TABLE IF NOT EXISTS albums (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     family_id UUID REFERENCES families(id) ON DELETE CASCADE,
     title text NOT NULL,
@@ -58,7 +60,7 @@ CREATE TABLE albums (
 ALTER TABLE albums ENABLE ROW LEVEL SECURITY;
 
 -- 5. photos
-CREATE TABLE photos (
+CREATE TABLE IF NOT EXISTS photos (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     family_id UUID REFERENCES families(id) ON DELETE CASCADE,
     album_id UUID REFERENCES albums(id) ON DELETE SET NULL,
@@ -73,10 +75,16 @@ CREATE TABLE photos (
 ALTER TABLE photos ENABLE ROW LEVEL SECURITY;
 
 -- Add FK for album cover now that photos exists
-ALTER TABLE albums ADD CONSTRAINT fk_album_cover FOREIGN KEY (cover_photo_id) REFERENCES photos(id) ON DELETE SET NULL;
+-- Check if constraint exists before adding to avoid error
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_album_cover') THEN
+        ALTER TABLE albums ADD CONSTRAINT fk_album_cover FOREIGN KEY (cover_photo_id) REFERENCES photos(id) ON DELETE SET NULL;
+    END IF;
+END $$;
 
 -- 6. comments
-CREATE TABLE comments (
+CREATE TABLE IF NOT EXISTS comments (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     photo_id UUID REFERENCES photos(id) ON DELETE CASCADE,
     profile_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
@@ -87,7 +95,7 @@ CREATE TABLE comments (
 ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
 
 -- 7. reactions
-CREATE TABLE reactions (
+CREATE TABLE IF NOT EXISTS reactions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     photo_id UUID REFERENCES photos(id) ON DELETE CASCADE,
     profile_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
@@ -101,6 +109,7 @@ ALTER TABLE reactions ENABLE ROW LEVEL SECURITY;
 -- RLS POLICIES
 
 -- Families: Viewable if member
+DROP POLICY IF EXISTS "View families if member" ON families;
 CREATE POLICY "View families if member"
 ON families FOR SELECT
 USING (
@@ -112,6 +121,7 @@ USING (
 );
 
 -- Family Members: Viewable if member of same family
+DROP POLICY IF EXISTS "View family members" ON family_members;
 CREATE POLICY "View family members"
 ON family_members FOR SELECT
 USING (
@@ -123,6 +133,7 @@ USING (
 );
 
 -- Albums: Viewable if member of family
+DROP POLICY IF EXISTS "View albums" ON albums;
 CREATE POLICY "View albums"
 ON albums FOR SELECT
 USING (
@@ -134,6 +145,7 @@ USING (
 );
 
 -- Photos: Viewable if member of family
+DROP POLICY IF EXISTS "View photos" ON photos;
 CREATE POLICY "View photos"
 ON photos FOR SELECT
 USING (
@@ -145,6 +157,7 @@ USING (
 );
 
 -- Comments/Reactions: Viewable if member of family (via photo)
+DROP POLICY IF EXISTS "View comments" ON comments;
 CREATE POLICY "View comments"
 ON comments FOR SELECT
 USING (
@@ -155,3 +168,4 @@ USING (
         AND fm.profile_id::text = current_setting('request.jwt.claims', true)::json->>'sub'
     )
 );
+

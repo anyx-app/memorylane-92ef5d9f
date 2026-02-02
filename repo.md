@@ -45,3 +45,18 @@ feat: add Albums page with grid layout
 
 ---
 
+
+## {anyx 799f008f-2ecd-48b1-8ce3-5177d7aec6c7} - 2026-02-02 17:13:32
+
+Commit: `HEAD`
+Branch: `feature/799f008f-2ecd-48b1-8ce3-5177d7aec6c7`
+
+Implemented Favorites feature:
+- Added `favorites` table in Supabase
+- Created `Favorites` page with responsive grid layout
+- Updated `Dashboard` to support favoriting photos
+- Added navigation link for Favorites
+- Verified backend and UI functionality
+
+---
+

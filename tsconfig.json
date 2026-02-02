@@ -41,7 +41,8 @@
     "api",
     "api/**/*.ts",
     "@tests",
-    "vitest.config.ts"
+    "vitest.config.ts",
+    "scripts"
   ],
   "exclude": [
     "tailwind.config.ts",

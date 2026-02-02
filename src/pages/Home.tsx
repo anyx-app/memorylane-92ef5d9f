@@ -1,11 +1,3 @@
-import { motion } from 'framer-motion'; // Assuming framer-motion is installed or I should stick to css. 
-// Note: Prompt mentions "Micro-Interactions (Framer Motion preferred)".
-// If not installed, I might need to run install command later, but usually boilerplate includes it or I can just write standard CSS if it fails.
-// I will write defensively or assume standard React if specific lib imports fail. 
-// Actually, standard approach: use it, and if build fails, I fix it. But I'll use simple CSS animation classes where possible to avoid dependency hell in this single step if I'm not sure.
-// Re-reading: "Tech Stack: React, Vite, TailwindCSS, Supabase". Framer Motion is NOT listed explicitly in 'Existing Project Data' Tech Stack, but listed in 'Visual Excellence Standards'. 
-// I will Use standard Tailwind classes for animations to be SAFE and ROBUST, mimicking framer motion.
-
 import { ArrowRight, Lock, Users, Camera } from 'lucide-react';
 
 export default function Home() {
@@ -84,3 +76,4 @@ export default function Home() {
     </div>
   );
 }
+
